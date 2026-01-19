@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width:420px;margin:60px auto;">
+  <h2 style="text-align:center;">Ingresar</h2>
+
+  <form method="post">
+    <div style="margin-bottom:16px;">
+      <label>Email</label>
+      <input
+        type="email"
+        name="email"
+        placeholder="usuario@email.com"
+        required
+      >
+    </div>
+
+    <div style="margin-bottom:24px;">
+      <label>Password</label>
+      <input
+        type="password"
+        name="password"
+        placeholder="********"
+        required
+      >
+    </div>
+
+    <button type="submit" style="width:100%;">
+      Ingresar
+    </button>
+  </form>
+</div>
+{% endblock %}
+
+
+
+

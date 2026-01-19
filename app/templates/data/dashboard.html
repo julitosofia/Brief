@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Proyectos asignados{% endblock %}
+
+{% block content %}
+<h2>Proyectos asignados</h2>
+
+{% for proyecto in proyectos %}
+  <div class="card">
+    <h3>{{ proyecto.nombre }}</h3>
+    <p>{{ proyecto.descripcion }}</p>
+
+    <a
+      href="{{ url_for('data.revisar_brief', project_id=proyecto.id) }}"
+      class="btn btn-primary"
+    >
+      Ver brief
+    </a>
+  </div>
+{% else %}
+  <p>No tenés proyectos asignados.</p>
+{% endfor %}
+{% endblock %}
+
+
+

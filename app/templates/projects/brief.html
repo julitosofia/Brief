@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Brief{% endblock %}
+
+{% block content %}
+<div class="card">
+  <h2>BRIEF TEMPLATE NUEVO</h2>
+  <p>Total briefs: {{ proyecto.briefs | length }}</p>
+</div>
+
+<form method="POST">
+  {% for brief in proyecto.briefs %}
+    <div class="card">
+      <h4>{{ brief.seccion }}</h4>
+
+      <textarea
+        name="brief_{{ brief.id }}"
+        rows="4"
+        {% if rol != 'campo' %}readonly{% endif %}
+      >{{ brief.respuesta or '' }}</textarea>
+
+      <p>
+        <strong>Estado:</strong>
+        {% if brief.estado == 'ok' %}
+          <span class="badge-ok">OK</span>
+        {% elif brief.estado == 'observado' %}
+          <span class="badge-obs">Observado</span>
+        {% else %}
+          {{ brief.estado }}
+        {% endif %}
+      </p>
+    </div>
+  {% endfor %}
+
+  <button type="submit">Guardar</button>
+</form>
+{% endblock %}
+
+
+
+
+
+

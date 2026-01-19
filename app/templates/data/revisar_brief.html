@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}Revisión de brief{% endblock %}
+
+{% block content %}
+<div class="card">
+  <h2>Revisión de proyecto</h2>
+  <p><strong>{{ proyecto.nombre }}</strong></p>
+</div>
+
+<form method="POST">
+  {% for brief in briefs %}
+    <div class="card">
+
+      <h3>{{ brief.seccion }}</h3>
+
+      <p><strong>Respuesta de campo:</strong></p>
+      <p style="background:#f9fafb;padding:12px;border-radius:8px;">
+        {{ brief.respuesta or "Sin respuesta aún" }}
+      </p>
+
+      <p>
+        <strong>Estado actual:</strong>
+        {% if brief.estado == "ok" %}
+          <span class="badge-ok">OK</span>
+        {% elif brief.estado == "observado" %}
+          <span class="badge-obs">Observado</span>
+        {% else %}
+          {{ brief.estado }}
+        {% endif %}
+      </p>
+
+      <div style="margin-top:12px;">
+        <label style="margin-right:20px;">
+          <input type="radio" name="accion_{{ brief.id }}" value="aprobar">
+          Aprobar
+        </label>
+
+        <label>
+          <input type="radio" name="accion_{{ brief.id }}" value="observar">
+          Observar
+        </label>
+      </div>
+
+      <div style="margin-top:12px;">
+        <textarea
+          name="comentario_{{ brief.id }}"
+          rows="3"
+          placeholder="Comentario (obligatorio si se observa)"
+        ></textarea>
+      </div>
+
+      {% if brief.comentarios %}
+        <hr>
+        <strong>Historial de comentarios:</strong>
+        <ul>
+          {% for c in brief.comentarios %}
+            <li>{{ c.comentario }} – <em>{{ c.autor.nombre }}</em></li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+
+    </div>
+  {% endfor %}
+
+  <button type="submit">Guardar revisión</button>
+</form>
+{% endblock %}
+
+

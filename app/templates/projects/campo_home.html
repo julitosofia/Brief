@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Proyectos asignados{% endblock %}
+
+{% block content %}
+<div class="card">
+  <h2>Proyectos asignados</h2>
+
+  {% if proyectos %}
+    <ul style="list-style:none;padding:0;margin:0;">
+      {% for proyecto in proyectos %}
+        <li
+          style="
+            padding:12px;
+            border-bottom:1px solid #e5e7eb;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+          "
+        >
+          <strong>{{ proyecto.nombre }}</strong>
+
+          <a href="{{ url_for('main.project_brief', project_id=proyecto.id) }}">
+            Ver brief
+          </a>
+
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No tenés proyectos asignados.</p>
+  {% endif %}
+</div>
+{% endblock %}
+
