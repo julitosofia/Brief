@@ -1,87 +1,109 @@
 {% extends "base.html" %}
 
 {% block content %}
-<style>
-    .dashboard-container { max-width: 1000px; margin: 40px auto; padding: 20px; font-family: 'Segoe UI', sans-serif; }
-    .header-section { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-    .btn-nuevo { background-color: #00338d; color: white; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 14px; }
-    .btn-borrar { background-color: #ef4444; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; display: none; }
+<div class="container" style="max-width: 1100px;">
     
-    .table-card { background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); overflow: hidden; }
-    table { width: 100%; border-collapse: collapse; text-align: left; }
-    thead tr { background-color: #f8faff; border-bottom: 2px solid #edf2f7; }
-    th { padding: 18px 20px; color: #4a5568; font-weight: 600; }
-    td { padding: 15px 20px; border-bottom: 1px solid #edf2f7; color: #2d3748; }
-    
-    .status-pill { padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
-    .status-aprobado { background-color: #def7ec; color: #03543f; }
-    .status-observado { background-color: #fde8e8; color: #9b1c1c; }
-    .status-default { background-color: #e1effe; color: #1e429f; }
-    
-    .btn-ver { color: #00338d; text-decoration: none; font-weight: 600; font-size: 13px; border: 1px solid #00338d; padding: 6px 15px; border-radius: 4px; }
-    .btn-ver:hover { background-color: #00338d; color: white; }
-</style>
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px; gap: 20px; flex-wrap: wrap;">
+            <div>
+                <h1 style="margin: 0;">Mis proyectos</h1>
+                <p style="font-weight: 600; color: #666; margin-top: 5px;">Gestión y monitoreo de briefs activos.</p>
+            </div>
 
-<div class="dashboard-container">
-    <div class="header-section">
-        <h2 style="color: #00338d; margin: 0;">Mis Proyectos</h2>
-        <div style="display: flex; gap: 12px;">
-            <a href="{{ url_for('campo.crear_proyecto') }}" class="btn-nuevo">+ Nuevo Proyecto</a>
-            <button form="form-borrar" type="submit" id="btn-borrar" class="btn-borrar">🗑️ Borrar Seleccionados</button>
+            <div style="display: flex; gap: 15px; align-items: center;">
+                <button 
+                    form="form-borrar" 
+                    type="submit" 
+                    id="btn-borrar" 
+                    class="btn-danger" 
+                    style="display: none;">
+                    🗑️ Borrar seleccionados
+                </button>
+
+                <a href="{{ url_for('campo.crear_proyecto') }}" class="btn-primary" style="padding: 12px 25px;">
+                    + Nuevo proyecto
+                </a>
+            </div>
         </div>
+
+        <form action="{{ url_for('campo.borrar_proyectos') }}" method="POST" id="form-borrar">
+            <div style="overflow-x: auto;">
+                <table class="brutalist-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 40px;">
+                                <input type="checkbox" id="select-all" onclick="toggleAll(this)" style="transform: scale(1.5);">
+                            </th>
+                            <th>Proyecto</th>
+                            <th>Estado</th>
+                            <th style="text-align: right;">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for proyecto in proyectos %}
+                        <tr>
+                            <td>
+                                <input 
+                                    type="checkbox" 
+                                    name="proyecto_ids" 
+                                    value="{{ proyecto.id }}" 
+                                    class="proyecto-checkbox" 
+                                    onclick="updateBtnVisibility()"
+                                    style="transform: scale(1.3);"
+                                >
+                            </td>
+                            <td>
+                                <span style="font-size: 1.1rem; letter-spacing: -0.5px;">{{ proyecto.nombre }}</span>
+                            </td>
+                            <td>
+                                <span class="status-badge 
+                                    {% if proyecto.estado == 'aprobado' %}status-aprobado
+                                    {% elif proyecto.estado == 'observado' %}status-observado
+                                    {% else %}status-default{% endif %}">
+                                    {{ proyecto.estado }}
+                                </span>
+                            </td>
+                            <td style="text-align: right;">
+                                <a href="{{ url_for('campo.editar_brief', project_id=proyecto.id) }}" class="btn-outline">
+                                    Ver brief →
+                                </a>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="4" style="padding: 60px; text-align: center; background: #fafafa;">
+                                <p style="font-weight: 800; text-transform: uppercase; color: #ccc; font-size: 1.5rem;">
+                                    No hay proyectos disponibles
+                                </p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </form>
     </div>
-
-    <form action="{{ url_for('campo.borrar_proyectos') }}" method="POST" id="form-borrar">
-        <div class="table-card">
-            <table>
-                <thead>
-                    <tr>
-                        <th style="width: 40px;"><input type="checkbox" id="select-all" onclick="toggleAll(this)"></th>
-                        <th>Proyecto</th>
-                        <th>Estado</th>
-                        <th style="text-align: right;">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for proyecto in proyectos %}
-                    <tr>
-                        <td><input type="checkbox" name="proyecto_ids" value="{{ proyecto.id }}" class="proyecto-checkbox" onclick="updateBtnVisibility()"></td>
-                        <td style="font-weight: 500;">{{ proyecto.nombre }}</td>
-                        <td>
-                            <span class="status-pill 
-                                {% if proyecto.estado == 'aprobado' %}status-aprobado
-                                {% elif proyecto.estado == 'observado' %}status-observado
-                                {% else %}status-default{% endif %}">
-                                {{ proyecto.estado }}
-                            </span>
-                        </td>
-                        <td style="text-align: right;">
-                            <a href="{{ url_for('campo.editar_brief', project_id=proyecto.id) }}" class="btn-ver">Ver Brief</a>
-                        </td>
-                    </tr>
-                    {% else %}
-                    <tr>
-                        <td colspan="4" style="padding: 40px; text-align: center; color: #718096;">No hay proyectos disponibles.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </form>
 </div>
 
 <script>
     function updateBtnVisibility() {
         const selected = document.querySelectorAll('.proyecto-checkbox:checked').length;
-        document.getElementById('btn-borrar').style.display = selected > 0 ? 'inline-block' : 'none';
+        const btn = document.getElementById('btn-borrar');
+        btn.style.display = selected > 0 ? 'inline-block' : 'none';
     }
+
     function toggleAll(source) {
         document.querySelectorAll('.proyecto-checkbox').forEach(cb => cb.checked = source.checked);
         updateBtnVisibility();
     }
-    document.getElementById('form-borrar').onsubmit = function() {
-        return confirm('¿Eliminar los proyectos seleccionados?');
-    };
+
+    document.getElementById('form-borrar').onsubmit = (e) => {
+        if (!confirm('¿Estás seguro de que deseas eliminar los proyectos seleccionados? Esta acción es permanente.')) {
+            e.preventDefault();
+        }
+    }
 </script>
 {% endblock %}
+
+
 
