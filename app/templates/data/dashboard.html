@@ -2,24 +2,58 @@
 {% block title %}Proyectos asignados{% endblock %}
 
 {% block content %}
-<h2>Proyectos asignados</h2>
+<div class="container" style="max-width: 1200px;">
 
-{% for proyecto in proyectos %}
-  <div class="card">
-    <h3>{{ proyecto.nombre }}</h3>
-    <p>{{ proyecto.descripcion }}</p>
-
-    <a
-      href="{{ url_for('data.revisar_brief', project_id=proyecto.id) }}"
-      class="btn btn-primary"
-    >
-      Ver brief
-    </a>
+  <div style="margin-bottom: 40px;">
+    <h1 style="font-size: 3.5rem;">Proyectos<br>Asignados</h1>
+    <p class="subtitle" style="display: inline-block;">Equipo Data / Panel de Control</p>
   </div>
-{% else %}
-  <p>No tenés proyectos asignados.</p>
-{% endfor %}
+
+  <div class="stats-grid">
+    <div class="stat-card" style="background-color: var(--color-accent);">
+      <span class="value">{{ proyectos|length }}</span>
+      <span class="label">Proyectos Totales</span>
+    </div>
+    <div class="stat-card">
+      <span class="value">24%</span>
+      <span class="label">En Revisión</span>
+    </div>
+    <div class="stat-card">
+      <span class="value">12</span>
+      <span class="label">Pendientes hoy</span>
+    </div>
+  </div>
+
+  {% if proyectos %}
+    <div class="projects-grid">
+      {% for proyecto in proyectos %}
+        <div class="card project-card">
+          <div>
+            <h3>{{ proyecto.nombre }}</h3>
+            <p class="project-description">
+              {{ proyecto.descripcion or "Este proyecto no tiene una descripción detallada todavía." }}
+            </p>
+          </div>
+
+          <div style="border-top: 2px solid var(--color-dark); padding-top: 20px; display: flex; justify-content: space-between; align-items: center;">
+             <a href="{{ url_for('data.revisar_brief', project_id=proyecto.id) }}" class="btn-primary" style="padding: 10px 20px; font-size: 0.8rem;">
+               Revisar Brief →
+             </a>
+             <span style="font-size: 0.7rem; font-weight: 800; text-transform: uppercase;">ID: #{{ proyecto.id }}</span>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="card" style="text-align: center; padding: 80px 20px; background: #eee;">
+      <h2 style="opacity: 0.3; font-size: 2rem;">No hay proyectos asignados</h2>
+      <p style="font-weight: 700; text-transform: uppercase;">Todo está al día por aquí.</p>
+    </div>
+  {% endif %}
+
+</div>
 {% endblock %}
+
 
 
 
