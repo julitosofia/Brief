@@ -2,73 +2,109 @@
 {% block title %}Editar Brief{% endblock %}
 
 {% block content %}
-<div class="container" style="max-width: 900px;">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
-  <div class="card" style="margin-bottom: 30px; background-color: var(--color-accent);">
-    <h1 style="margin: 0; font-size: 3rem;">{{ proyecto.nombre }}</h1>
-    <p style="font-weight: 800; text-transform: uppercase; margin-top: 10px; color: var(--color-dark);">
-      Editor de Brief / <span style="opacity: 0.7;">Revisión de Secciones</span>
-    </p>
-  </div>
-
-  <form method="POST">
-    {% for brief in briefs %}
-      <div class="card brief-section">
-        
-        <h3 style="font-size: 1.5rem; margin-bottom: 20px; border-left: 8px solid var(--color-dark); padding-left: 15px;">
-          {{ brief.seccion }}
-        </h3>
-
-        {% if brief.estado == "observado" and brief.comentarios %}
-          <div class="alert-observation">
-            <strong>⚠️ Observación del equipo Data:</strong>
-            <p style="margin: 0; font-weight: 600;">
-              {{ brief.comentarios[-1].comentario }}
-            </p>
-          </div>
-        {% endif %}
-
-        <div class="form-group" style="margin-bottom: 0;">
-          <label>Tu respuesta</label>
-          {% if "Plazos" in brief.seccion or "Entrega" in brief.seccion %}
-            <input
-              type="date"
-              name="seccion_{{ brief.id }}"
-              value="{{ brief.respuesta }}"
-              required
-            >
-          {% else %}
-            <textarea
-              name="seccion_{{ brief.id }}"
-              rows="5"
-              placeholder="Describa los detalles aquí..."
-              style="resize: vertical;"
-            >{{ brief.respuesta or "" }}</textarea>
-          {% endif %}
-        </div>
-      </div>
-    {% endfor %}
-
-    <div class="card" style="display: flex; gap: 20px; align-items: center; justify-content: space-between; background: var(--color-dark); color: white;">
-      <div style="display: flex; gap: 20px; align-items: center;">
-        <button type="submit" class="btn-primary">
-          Enviar a revisión →
-        </button>
-        
-        <a href="{{ url_for('campo.dashboard') }}" class="btn-cancel" style="color: white;">
-          Volver al panel
-        </a>
-      </div>
-      
-      <p style="font-size: 0.7rem; text-transform: uppercase; font-weight: 800; margin: 0; opacity: 0.6;">
-        Asegúrate de responder todas las secciones observadas.
-      </p>
+<div style="font-family: 'Inter', sans-serif; max-width: 900px; margin: auto;">
+    
+    <div class="card" style="border-radius: 15px; padding: 30px; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px;">
+        <h2 style="color: #00338d; font-weight: 700; margin-bottom: 5px;">{{ proyecto.nombre }}</h2>
+        <p style="color: #666; font-size: 0.95rem;">Completá cada sección del brief y enviá a revisión para comenzar el proceso.</p>
     </div>
 
-  </form>
+    <form method="POST">
+        {% for brief in briefs %}
+            <div class="card" style="border-radius: 15px; padding: 25px; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; background: #fff;">
+                
+                <h3 style="color: #333; font-weight: 600; font-size: 1.1rem; margin-bottom: 15px;">{{ brief.seccion }}</h3>
+
+                {% if brief.estado == "observado" and brief.comentarios %}
+                    <div style="background:#FFF1F2; border-left:5px solid #E11D48; padding:15px; border-radius:10px; margin-bottom:15px;">
+                        <strong style="color: #9F1239; font-size: 0.9rem;">Observación del equipo Data:</strong><br>
+                        <span style="color: #BE123C; font-size: 0.95rem;">{{ brief.comentarios[-1].comentario }}</span>
+                    </div>
+                {% endif %}
+
+                {# ---------- CAMPOS DE FECHA (DateTime mejorado) ---------- #}
+                {% if "Plazos" in brief.seccion or "Entrega" in brief.seccion %}
+                    <div style="position: relative;">
+                        <input
+                            type="date"
+                            name="seccion_{{ brief.id }}"
+                            value="{{ brief.respuesta }}"
+                            style="
+                                width: 100%;
+                                padding: 12px 15px;
+                                border-radius: 10px;
+                                border: 1px solid #e0e0e0;
+                                background-color: #f9fafb;
+                                font-family: inherit;
+                                font-size: 15px;
+                                color: #444;
+                                outline: none;
+                            "
+                            onfocus="this.style.borderColor='#00338d'; this.style.backgroundColor='#fff'"
+                            onblur="this.style.borderColor='#e0e0e0'; this.style.backgroundColor='#f9fafb'"
+                        >
+                    </div>
+                {% else %}
+                {# ---------- TEXTAREA ESTILIZADO ---------- #}
+                    <textarea
+                        name="seccion_{{ brief.id }}"
+                        rows="4"
+                        placeholder="Escribí tu respuesta aquí..."
+                        style="
+                            width: 100%;
+                            padding: 15px;
+                            border-radius: 10px;
+                            border: 1px solid #e0e0e0;
+                            background-color: #f9fafb;
+                            font-family: inherit;
+                            font-size: 15px;
+                            color: #444;
+                            resize: vertical;
+                            outline: none;
+                        "
+                        onfocus="this.style.borderColor='#00338d'; this.style.backgroundColor='#fff'"
+                        onblur="this.style.borderColor='#e0e0e0'; this.style.backgroundColor='#f9fafb'"
+                    >{{ brief.respuesta or "" }}</textarea>
+                {% endif %}
+
+                {# El estado ha sido removido de aquí para limpiar la interfaz #}
+            </div>
+        {% endfor %}
+
+        <div style="display: flex; gap: 15px; margin-top: 30px; margin-bottom: 50px; align-items: center;">
+            <button type="submit" style="
+                background-color: #00338d;
+                color: white;
+                border: none;
+                padding: 12px 30px;
+                border-radius: 10px;
+                font-weight: 600;
+                font-size: 15px;
+                cursor: pointer;
+                transition: all 0.2s;
+                box-shadow: 0 4px 10px rgba(0,51,141,0.2);
+            " onmouseover="this.style.backgroundColor='#002566'" onmouseout="this.style.backgroundColor='#00338d'">
+                Enviar a revisión
+            </button>
+
+            <a href="{{ url_for('campo.dashboard') }}" style="
+                text-decoration: none;
+                color: #00338d;
+                border: 2px solid #00338d;
+                padding: 10px 25px;
+                border-radius: 10px;
+                font-weight: 600;
+                font-size: 15px;
+                transition: all 0.2s;
+            " onmouseover="this.style.background='rgba(0,51,141,0.05)'" onmouseout="this.style.background='transparent'">
+                Volver al panel
+            </a>
+        </div>
+    </form>
 </div>
 {% endblock %}
-
 
 
 

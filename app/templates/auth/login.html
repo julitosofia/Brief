@@ -2,58 +2,36 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
-<div class="auth-wrapper">
-  <div class="card" style="max-width: 420px; width: 100%;">
+<div class="card" style="max-width:420px;margin:60px auto;">
+  <h2 style="text-align:center;">Ingresar</h2>
 
-    <div style="margin-bottom: 40px;">
-      <h1>Bienvenido 👋</h1>
-      <p class="subtitle" style="border-bottom: none; padding-bottom: 0; margin-bottom: 0;">
-        Ingresá a la plataforma para continuar
-      </p>
+  <form method="post">
+    <div style="margin-bottom:16px;">
+      <label>Email</label>
+      <input
+        type="email"
+        name="email"
+        placeholder="usuario@email.com"
+        required
+      >
     </div>
 
-    <form method="post">
-      
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input
-          type="email"
-          id="email"
-          name="email"
-          placeholder="usuario@email.com"
-          required
-        >
-      </div>
-
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input
-          type="password"
-          id="password"
-          name="password"
-          placeholder="••••••••"
-          required
-        >
-      </div>
-
-      <div style="margin-top: 20px;">
-        <button type="submit" class="btn-primary btn-full">
-          Ingresar ahora
-        </button>
-      </div>
-
-    </form>
-
-    <div style="margin-top: 30px; text-align: center;">
-      <a href="#" class="btn-cancel" style="text-decoration: none; font-size: 0.8rem;">
-        ¿Olvidaste tu contraseña?
-      </a>
+    <div style="margin-bottom:24px;">
+      <label>Password</label>
+      <input
+        type="password"
+        name="password"
+        placeholder="********"
+        required
+      >
     </div>
 
-  </div>
+    <button type="submit" style="width:100%;">
+      Ingresar
+    </button>
+  </form>
 </div>
 {% endblock %}
-
 
 
 

@@ -2,72 +2,38 @@
 {% block title %}Brief{% endblock %}
 
 {% block content %}
-<div class="container" style="max-width: 900px;">
-
-  <div style="margin-bottom: 40px;">
-    <h1 style="font-size: 3rem; line-height: 1;">Detalles del<br>Brief</h1>
-    <div style="display: flex; align-items: center; gap: 15px; margin-top: 10px;">
-        <span class="status-badge" style="background: var(--color-dark); color: white;">
-            {{ proyecto.briefs | length }} Secciones totales
-        </span>
-        <p class="subtitle" style="margin: 0; border: none; padding: 0;">Revisión de consistencia de datos</p>
-    </div>
-  </div>
-
-  <form method="POST">
-    {% for brief in proyecto.briefs %}
-      <div class="card" style="margin-bottom: 30px;">
-        
-        <div class="section-header">
-          <h4 style="font-size: 1.3rem; margin: 0; text-transform: uppercase; font-weight: 900;">
-            {{ brief.seccion }}
-          </h4>
-
-          <span class="status-badge 
-            {% if brief.estado == 'ok' %}status-aprobado
-            {% elif brief.estado == 'observado' %}status-observado
-            {% else %}status-default{% endif %}">
-            {{ brief.estado or 'pendiente' }}
-          </span>
-        </div>
-
-        <div class="form-group" style="margin-bottom: 0;">
-          <textarea
-            name="brief_{{ brief.id }}"
-            rows="5"
-            {% if rol != 'campo' %}readonly{% endif %}
-            placeholder="Esperando respuesta de campo..."
-          >{{ brief.respuesta or '' }}</textarea>
-        </div>
-
-        {% if brief.estado == 'observado' %}
-          <div style="margin-top: 15px; font-size: 0.8rem; font-weight: 800; color: #ff4757; text-transform: uppercase;">
-            ⚠ Esta sección requiere correcciones
-          </div>
-        {% endif %}
-      </div>
-    {% endfor %}
-
-    {% if rol == 'campo' %}
-      <div class="card" style="display: flex; align-items: center; gap: 20px; background: var(--color-dark);">
-        <button type="submit" class="btn-primary">
-          Actualizar Brief
-        </button>
-
-        <a href="{{ url_for('campo.dashboard') }}" class="btn-cancel" style="color: white; text-decoration: none;">
-          Volver al panel
-        </a>
-      </div>
-    {% else %}
-      <div style="text-align: center; margin-top: 20px;">
-          <a href="javascript:history.back()" class="btn-outline">← Volver atrás</a>
-      </div>
-    {% endif %}
-
-  </form>
+<div class="card">
+  <h2>BRIEF TEMPLATE NUEVO</h2>
+  <p>Total briefs: {{ proyecto.briefs | length }}</p>
 </div>
-{% endblock %}
 
+<form method="POST">
+  {% for brief in proyecto.briefs %}
+    <div class="card">
+      <h4>{{ brief.seccion }}</h4>
+
+      <textarea
+        name="brief_{{ brief.id }}"
+        rows="4"
+        {% if rol != 'campo' %}readonly{% endif %}
+      >{{ brief.respuesta or '' }}</textarea>
+
+      <p>
+        <strong>Estado:</strong>
+        {% if brief.estado == 'ok' %}
+          <span class="badge-ok">OK</span>
+        {% elif brief.estado == 'observado' %}
+          <span class="badge-obs">Observado</span>
+        {% else %}
+          {{ brief.estado }}
+        {% endif %}
+      </p>
+    </div>
+  {% endfor %}
+
+  <button type="submit">Guardar</button>
+</form>
+{% endblock %}
 
 
 
